@@ -13,7 +13,7 @@ function App() {
   const [selected, setSelected] = useState(-1);
 
   const handleSelected = value => {
-    console.log(value);
+    // console.log(value);
     setSelected(value);
     setCurrentGame(null); // clear current game data
   }
@@ -41,9 +41,9 @@ function App() {
         // fetch the first data for first histogram
         setSelected(games_data[0].id);
       
-        console.log(venues_data);
-        console.log(teams_data);
-        console.log(games_data);
+        // console.log(venues_data);
+        // console.log(teams_data);
+        // console.log(games_data);
 
       } catch (error) {
         console.error(error);
@@ -86,7 +86,7 @@ function App() {
 
       // format game to display simulation results
       setCurrentGame(games_data.data);
-      console.log(games_data.data);
+      // console.log(games_data.data);
     } catch (error) {
       console.error(error);
     }
