@@ -28,10 +28,10 @@ function Dropdown({ options, onSelect }) {
         >
           {
             options.map((item, index) =>{
-              if(item == 0){
-                console.log(options);
-              }
-              console.log(item);
+              //if(item == 0){
+                //console.log(options);
+              //}
+              //console.log(item);
               return <MenuItem key={index} value={item.id}>{item.home_team_name} vs {item.away_team_name} ({item.venue_name})</MenuItem>
             })
           }
