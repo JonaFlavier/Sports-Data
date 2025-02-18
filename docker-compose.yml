@@ -1,0 +1,55 @@
+services:
+  # FastAPI Backend
+  app:
+    build:
+      context: ./backend
+    container_name: fastAPI-backend
+    command: uvicorn src.main:app --host 0.0.0.0 --port 80 --reload # --reload enables auto-reload
+    ports:
+      - 80:80 # Expose the FastAPI app on port 80
+      - 5678:5678
+    volumes:
+      - ./backend/src:/backend/src # Mount local backend code into the container
+      - ./backend/requirements.txt:/backend/requirements.txt # Ensure requirements are up-to-date
+      - ./backend/data:/backend/data # Persist the test data to be loaded into db
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres/game_db
+      - REDIS_URL=redis://redis:6379
+
+  # React Frontend with volume for live updates
+  frontend:
+    build:
+      context: ./frontend
+    container_name: react-frontend
+    ports:
+      - 3000:3000 # Expose the frontend app on port 3000
+    volumes:
+      - ./frontend/src:/frontend/src # Mount local React source code into the container
+      - ./frontend/public:/frontend/public # Ensure the public folder is also synced
+      - /frontend/node_modules # Persist node_modules inside the container
+      - ./frontend/package.json:/frontend/package.json # ensure package.json is up to date
+    command: ["npm", "start"] # Use npm start to run the React app (for live reloading)
+    depends_on:
+      - app
+
+  # Postgres Database
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: game_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Redis Cache
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
+volumes:
+  postgres_data:
